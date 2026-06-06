@@ -50,6 +50,9 @@ void UStudentPerceptorGoeminneSenne::OnPerceptionUpdated(AActor* Actor, FAIStimu
 		GEngine->AddOnScreenDebugMessage(5, 2.f, FColor::Green,
 			FString::Printf(TEXT("Saw House!")));
 		
+		m_pBlackboard->SetValueAsObject("SpottedHouse", House);
+		m_pBlackboard->SetValueAsVector("HouseLocation", House->GetBounds().Origin);
+		
 		return;
 	}
 	
