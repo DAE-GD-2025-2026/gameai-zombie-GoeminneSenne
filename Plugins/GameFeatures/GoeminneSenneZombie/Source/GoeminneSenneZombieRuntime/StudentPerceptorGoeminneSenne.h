@@ -10,6 +10,7 @@
 #include "Perception/AISense_Damage.h"
 #include "StudentPerceptorGoeminneSenne.generated.h"
 
+enum class EItemType : uint8;
 class UHealthComponent;
 class UStaminaComponent;
 class UInventoryComponent;
@@ -34,4 +35,5 @@ private:
 	UStaminaComponent* m_pStamina{nullptr};
 	UInventoryComponent* m_pInventory{nullptr};
 	
+	FString ItemTypeToString(EItemType ItemType) const;
 };

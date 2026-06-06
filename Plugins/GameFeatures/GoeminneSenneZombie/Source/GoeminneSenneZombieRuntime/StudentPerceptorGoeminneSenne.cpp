@@ -4,9 +4,12 @@
 #include "StudentPerceptorGoeminneSenne.h"
 
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Common/HealthComponent.h"
 #include "Common/StaminaComponent.h"
 #include "Common/InventoryComponent.h"
+#include "Village/House/House.h"
+#include "Zombies/BaseZombie.h"
 
 
 UStudentPerceptorGoeminneSenne::UStudentPerceptorGoeminneSenne()
@@ -37,7 +40,59 @@ void UStudentPerceptorGoeminneSenne::BeginPlay()
 }
 
 void UStudentPerceptorGoeminneSenne::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{	
+	if (m_pBlackboard == nullptr) return;
+	if (not Stimulus.WasSuccessfullySensed()) return;
+
+	// --- House ---------
+	if (AHouse* House = Cast<AHouse>(Actor))
+	{
+		GEngine->AddOnScreenDebugMessage(5, 2.f, FColor::Green,
+			FString::Printf(TEXT("Saw House!")));
+		
+		return;
+	}
+	
+	// --- Items ---------
+	if (ABaseItem* Item = Cast<ABaseItem>(Actor))
+	{
+		GEngine->AddOnScreenDebugMessage(5, 2.f, FColor::Green,
+	FString::Printf(TEXT("Saw %s"), *ItemTypeToString(Item->GetItemType())));
+		
+		m_pBlackboard->SetValueAsObject("SpottedItem", Item);
+		m_pBlackboard->SetValueAsVector("ItemLocation", Item->GetActorLocation());
+		
+		return;
+	}
+	
+	// --- Zombie ---------
+	if (ABaseZombie* Zombie = Cast<ABaseZombie>(Actor))
+	{
+		GEngine->AddOnScreenDebugMessage(5, 2.f, FColor::Green,
+	FString::Printf(TEXT("Saw Zombie!")));
+		
+		return;
+	}
+	
+}
+
+FString UStudentPerceptorGoeminneSenne::ItemTypeToString(EItemType ItemType) const
 {
-	GEngine->AddOnScreenDebugMessage(5, 1.f, FColor::Green, 
-	FString::Printf(TEXT("Saw Something!")));
+	switch (ItemType)
+	{
+	case EItemType::Garbage:
+		return TEXT("Garbage");
+	case EItemType::Food:
+		return TEXT("Food");
+	case EItemType::Medkit:
+		return TEXT("Medkit");
+	case EItemType::Pistol:
+		return TEXT("Pistol");
+	case EItemType::Shotgun:
+		return TEXT("Shotgun");
+	default:
+		break;
+	}
+	
+	return TEXT("Unknown Item Type");
 }
