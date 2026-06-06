@@ -26,6 +26,7 @@ public class GoeminneSenneZombieRuntime : ModuleRules
 			new string[]
 			{
 				"Core",
+				"GameAI_Zombie"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -38,7 +39,7 @@ public class GoeminneSenneZombieRuntime : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"AIModule"
+				"AIModule", 
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

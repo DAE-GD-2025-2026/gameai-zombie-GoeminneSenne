@@ -3,6 +3,11 @@
 
 #include "StudentPerceptorGoeminneSenne.h"
 
+#include "AIController.h"
+#include "Common/HealthComponent.h"
+#include "Common/StaminaComponent.h"
+#include "Common/InventoryComponent.h"
+
 
 UStudentPerceptorGoeminneSenne::UStudentPerceptorGoeminneSenne()
 {
@@ -17,6 +22,18 @@ void UStudentPerceptorGoeminneSenne::BeginPlay()
 	{
 		PerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &UStudentPerceptorGoeminneSenne::OnPerceptionUpdated);
 	}
+	
+	if (APawn* Pawn = Cast<APawn>(GetOwner()))
+	{
+		if (AAIController* Controller = Cast<AAIController>(Pawn->GetController()))
+		{
+			m_pBlackboard = Controller->GetBlackboardComponent();
+		}
+	}
+	
+	m_pHealth = GetOwner()->GetComponentByClass<UHealthComponent>();
+	m_pStamina = GetOwner()->GetComponentByClass<UStaminaComponent>();
+	m_pInventory = GetOwner()->GetComponentByClass<UInventoryComponent>();
 }
 
 void UStudentPerceptorGoeminneSenne::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

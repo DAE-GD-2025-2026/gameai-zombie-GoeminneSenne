@@ -10,6 +10,10 @@
 #include "Perception/AISense_Damage.h"
 #include "StudentPerceptorGoeminneSenne.generated.h"
 
+class UHealthComponent;
+class UStaminaComponent;
+class UInventoryComponent;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GOEMINNESENNEZOMBIERUNTIME_API UStudentPerceptorGoeminneSenne : public UActorComponent
 {
@@ -23,4 +27,11 @@ public:
 
 	UFUNCTION()
 	virtual void OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
+private:
+	UBlackboardComponent* m_pBlackboard{nullptr};
+	UHealthComponent* m_pHealth{nullptr};
+	UStaminaComponent* m_pStamina{nullptr};
+	UInventoryComponent* m_pInventory{nullptr};
+	
 };
