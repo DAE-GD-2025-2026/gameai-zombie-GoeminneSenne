@@ -50,6 +50,15 @@ void UStudentPerceptorGoeminneSenne::OnPerceptionUpdated(AActor* Actor, FAIStimu
 		GEngine->AddOnScreenDebugMessage(5, 2.f, FColor::Green,
 			FString::Printf(TEXT("Saw House!")));
 		
+		//Check if House was already visited
+		if (m_VisitedHouses.Contains(House))
+		{
+			GEngine->AddOnScreenDebugMessage(4, 2.f, FColor::Yellow, FString::Printf(TEXT("Already visited spotted house")));
+			return;
+		}
+		
+		m_VisitedHouses.Add(House);
+		
 		m_pBlackboard->SetValueAsObject("SpottedHouse", House);
 		m_pBlackboard->SetValueAsVector("HouseLocation", House->GetBounds().Origin);
 		

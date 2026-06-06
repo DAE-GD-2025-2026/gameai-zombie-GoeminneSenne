@@ -60,6 +60,14 @@ EBTNodeResult::Type UBTTaskGrabItemGoeminneSenne::ExecuteTask(UBehaviorTreeCompo
 	bool bGrabResult = Inventory->GrabItem(SlotIndex, SpottedItem);
 	if (not bGrabResult) return EBTNodeResult::Failed;
 	
+	//Check if inventory is now full after picking up new item
+	bool bIsInventoryFull = not InventorySlots.Contains(nullptr);
+	Blackboard->SetValueAsBool("HasFullInventory", bIsInventoryFull);
+	if (bIsInventoryFull)
+	{
+		GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Purple, TEXT("Inventory is now full"));
+	}
+	
 	//Reset Blackboard fields
 	Blackboard->ClearValue("SpottedItem");
 	Blackboard->ClearValue("ItemLocation");

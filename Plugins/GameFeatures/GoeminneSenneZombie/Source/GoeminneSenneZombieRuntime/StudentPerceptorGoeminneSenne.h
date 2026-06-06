@@ -10,6 +10,7 @@
 #include "Perception/AISense_Damage.h"
 #include "StudentPerceptorGoeminneSenne.generated.h"
 
+class AHouse;
 enum class EItemType : uint8;
 class UHealthComponent;
 class UStaminaComponent;
@@ -34,6 +35,9 @@ private:
 	UHealthComponent* m_pHealth{nullptr};
 	UStaminaComponent* m_pStamina{nullptr};
 	UInventoryComponent* m_pInventory{nullptr};
+	
+	TArray<AHouse*> m_VisitedHouses{};
+	
 	
 	FString ItemTypeToString(EItemType ItemType) const;
 };
