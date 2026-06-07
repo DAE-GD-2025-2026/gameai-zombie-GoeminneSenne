@@ -60,6 +60,23 @@ EBTNodeResult::Type UBTTaskGrabItemGoeminneSenne::ExecuteTask(UBehaviorTreeCompo
 	bool bGrabResult = Inventory->GrabItem(SlotIndex, SpottedItem);
 	if (not bGrabResult) return EBTNodeResult::Failed;
 	
+	//Update Blackboard booleans
+	switch (SpottedItem->GetItemType())
+	{
+	case EItemType::Medkit:
+		Blackboard->SetValueAsBool("HasMedkit", true);
+		break;
+	case EItemType::Food:
+		Blackboard->SetValueAsBool("HasFood", true);
+		break;
+	case EItemType::Pistol:
+	case EItemType::Shotgun:
+		Blackboard->SetValueAsBool("HasWeapon", true);
+		break;
+	default:
+		break;
+	}
+	
 	//Check if inventory is now full after picking up new item
 	bool bIsInventoryFull = not InventorySlots.Contains(nullptr);
 	Blackboard->SetValueAsBool("HasFullInventory", bIsInventoryFull);

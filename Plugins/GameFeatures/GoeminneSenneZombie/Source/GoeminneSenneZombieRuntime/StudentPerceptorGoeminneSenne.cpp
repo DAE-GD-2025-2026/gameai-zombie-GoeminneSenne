@@ -39,6 +39,15 @@ void UStudentPerceptorGoeminneSenne::BeginPlay()
 	m_pInventory = GetOwner()->GetComponentByClass<UInventoryComponent>();
 }
 
+void UStudentPerceptorGoeminneSenne::TickComponent(float DeltaTime, enum ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	m_pBlackboard->SetValueAsFloat("Health", m_pHealth->GetHealth());
+	m_pBlackboard->SetValueAsFloat("Stamina", m_pStamina->GetCurrentStamina());
+}
+
 void UStudentPerceptorGoeminneSenne::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {	
 	if (m_pBlackboard == nullptr) return;
