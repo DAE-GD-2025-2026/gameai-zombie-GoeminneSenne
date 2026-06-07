@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Survivor/SurvivorPawn.h"
 
 UBTTaskFleeGoeminneSenne::UBTTaskFleeGoeminneSenne()
 {
@@ -22,6 +23,17 @@ EBTNodeResult::Type UBTTaskFleeGoeminneSenne::ExecuteTask(UBehaviorTreeComponent
 	ABaseZombie* Zombie = Cast<ABaseZombie>(Blackboard->GetValueAsObject("SpottedZombie"));
 	if (not Zombie) return EBTNodeResult::Failed;
 	SpottedZombie = Zombie;
+	
+	//Start Sprinting
+	AAIController* AIController = OwnerComp.GetAIOwner();
+	if (not AIController) return EBTNodeResult::Failed;
+	ASurvivorPawn* Survivor = Cast<ASurvivorPawn>(AIController->GetPawn());
+	if (not Survivor) return EBTNodeResult::Failed;
+	
+	//Only Sprint if we have enough stamina to keep moving
+	if (Blackboard->GetValueAsFloat("Stamina") >= 3)
+	Survivor->StartRunning();
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Green, FString::Printf(TEXT("Started Sprinting")));
 	
 	return EBTNodeResult::InProgress;
 }
@@ -46,4 +58,38 @@ void UBTTaskFleeGoeminneSenne::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
 
 	Pawn->SetActorRotation(FleeMovement.Rotation());
 	Pawn->AddMovementInput(FleeMovement);	
+	
+	//Check if we are far enough away from Chasing Zombie
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+	if (not Blackboard) return;
+	if (CheckSafeDistance(Pawn, Blackboard))
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+}
+
+EBTNodeResult::Type UBTTaskFleeGoeminneSenne::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	AAIController* AIController = OwnerComp.GetAIOwner();
+	ASurvivorPawn* Survivor = Cast<ASurvivorPawn>(AIController->GetPawn());
+	if (not Survivor) return EBTNodeResult::Failed;
+	Survivor->StopRunning();
+	GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Orange, FString::Printf(TEXT("Stopped Sprinting")));
+	return EBTNodeResult::Aborted;
+}
+
+bool UBTTaskFleeGoeminneSenne::CheckSafeDistance(APawn* Pawn, UBlackboardComponent* Blackboard)
+{
+	if (FVector::DistSquared(Pawn->GetActorLocation(), SpottedZombie->GetActorLocation()) >= SafeDistance * SafeDistance)
+	{
+		Blackboard->ClearValue("SpottedZombie");
+		ASurvivorPawn* Survivor = Cast<ASurvivorPawn>(Pawn);
+		if (not Survivor) return false;
+		
+		Survivor->StopRunning();
+		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Orange, FString::Printf(TEXT("Stopped Sprinting")));
+		return true;
+	}
+	
+	return false;
 }
