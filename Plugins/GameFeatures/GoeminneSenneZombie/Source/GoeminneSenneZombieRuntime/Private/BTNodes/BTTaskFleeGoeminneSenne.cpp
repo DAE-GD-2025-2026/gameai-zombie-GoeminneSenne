@@ -5,6 +5,8 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UBTTaskFleeGoeminneSenne::UBTTaskFleeGoeminneSenne()
 {
@@ -32,6 +34,7 @@ void UBTTaskFleeGoeminneSenne::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
 	APawn* Pawn = AIController->GetPawn();
 	if (not Pawn) return;
 	
+	
 	//Check if Zombie still exists
 	if (not SpottedZombie) return;
 	
@@ -39,7 +42,8 @@ void UBTTaskFleeGoeminneSenne::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
 	FVector FleeMovement = Pawn->GetActorLocation() - SpottedZombie->GetActorLocation();
 	FleeMovement.Z = 0;
 	
-	GEngine->AddOnScreenDebugMessage(7, 1.f, FColor::Magenta, FString::Printf(TEXT("%f %f"), FleeMovement.X, FleeMovement.Y));
+	GEngine->AddOnScreenDebugMessage(6, 1.f, FColor::Magenta, FString::Printf(TEXT("Flee Movement: %f %f"), FleeMovement.X, FleeMovement.Y));
 
+	Pawn->SetActorRotation(FleeMovement.Rotation());
 	Pawn->AddMovementInput(FleeMovement);	
 }
