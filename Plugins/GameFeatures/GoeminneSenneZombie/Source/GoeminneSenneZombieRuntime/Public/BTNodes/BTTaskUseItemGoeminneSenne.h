@@ -21,5 +21,4 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Item Type")
 	EItemType ItemType;
-
 };
