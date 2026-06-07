@@ -92,6 +92,8 @@ void UStudentPerceptorGoeminneSenne::OnPerceptionUpdated(AActor* Actor, FAIStimu
 		GEngine->AddOnScreenDebugMessage(5, 2.f, FColor::Green,
 	FString::Printf(TEXT("Saw Zombie!")));
 		
+		m_pBlackboard->SetValueAsObject("SpottedZombie", Zombie);
+		
 		return;
 	}
 	
