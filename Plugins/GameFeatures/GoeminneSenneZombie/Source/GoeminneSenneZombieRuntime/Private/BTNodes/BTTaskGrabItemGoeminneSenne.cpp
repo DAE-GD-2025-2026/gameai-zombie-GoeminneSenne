@@ -74,7 +74,7 @@ EBTNodeResult::Type UBTTaskGrabItemGoeminneSenne::ExecuteTask(UBehaviorTreeCompo
 		Blackboard->SetValueAsBool("HasWeapon", true);
 		break;
 	default:
-		break;
+		break;	
 	}
 	
 	//Check if inventory is now full after picking up new item
