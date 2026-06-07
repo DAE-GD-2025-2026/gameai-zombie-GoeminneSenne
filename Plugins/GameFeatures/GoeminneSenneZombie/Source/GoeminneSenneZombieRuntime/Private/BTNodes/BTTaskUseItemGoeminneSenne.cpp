@@ -33,37 +33,10 @@ EBTNodeResult::Type UBTTaskUseItemGoeminneSenne::ExecuteTask(UBehaviorTreeCompon
 			//Remove item from inventory if it has no value anymore
 			if (Item->GetValue() <= 0)
 			{
-				Inventory->RemoveItem(idx);
-				
-				//Check if another object of the same type is still in inventory
-				bool bIsTypeInInventory = false;
-				for (int ContinueIndex{idx}; ContinueIndex < Inventory->GetInventory().Num(); ++ContinueIndex)
-				{
-					if (InventorySlots[ContinueIndex] && InventorySlots[ContinueIndex]->GetItemType() == ItemType)
-					{
-						bIsTypeInInventory = true;
-						break;
-					}
-				}
-				
-				//Update the blackboard fields for HasMedkit/HasFood
 				UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
-				if (not Blackboard) break;
-				
-				switch (ItemType)
-				{
-				case EItemType::Medkit:
-					Blackboard->SetValueAsBool("HasMedkit", bIsTypeInInventory);
-					break;
-				case EItemType::Food:
-					Blackboard->SetValueAsBool("HasFood", bIsTypeInInventory);
-					break;
-				default:
-					break;
-				}
-				
+				RemoveItem(Inventory, idx, Blackboard);
 			}
-			
+						
 			return EBTNodeResult::Succeeded;
 		}
 	}
@@ -71,3 +44,37 @@ EBTNodeResult::Type UBTTaskUseItemGoeminneSenne::ExecuteTask(UBehaviorTreeCompon
 	GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Red, TEXT("Could not find component of specific type") );
 	return EBTNodeResult::Failed;
 }
+
+void UBTTaskUseItemGoeminneSenne::RemoveItem(UInventoryComponent* Inventory, int SlotIndex,
+	UBlackboardComponent* Blackboard) const
+{
+		Inventory->RemoveItem(SlotIndex);
+				
+		//Check if another object of the same type is still in inventory
+		bool bIsTypeInInventory = false;
+		for (int ContinueIndex{SlotIndex}; ContinueIndex < Inventory->GetInventory().Num(); ++ContinueIndex)
+		{
+			auto ContinueItem = Inventory->GetInventory()[ContinueIndex];
+			
+			if (ContinueItem && ContinueItem->GetItemType() == ItemType)
+			{
+				bIsTypeInInventory = true;
+				break;
+			}
+		}
+				
+		//Update the blackboard fields for HasMedkit/HasFood				
+		switch (ItemType)
+		{
+		case EItemType::Medkit:
+			Blackboard->SetValueAsBool("HasMedkit", bIsTypeInInventory);
+			break;
+		case EItemType::Food:
+			Blackboard->SetValueAsBool("HasFood", bIsTypeInInventory);
+			break;
+		default:
+			break;
+		}
+	
+}
+

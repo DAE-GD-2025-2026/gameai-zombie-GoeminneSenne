@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "Common/InventoryComponent.h"
 #include "Items/ItemType.h"
 #include "BTTaskUseItemGoeminneSenne.generated.h"
 
@@ -21,4 +22,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Item Type")
 	EItemType ItemType;
+	
+private:
+	void RemoveItem(UInventoryComponent* Inventory, int SlotIndex, UBlackboardComponent* Blackboard) const;
 };
