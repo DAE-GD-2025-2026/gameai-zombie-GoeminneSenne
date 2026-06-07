@@ -17,6 +17,8 @@ class GOEMINNESENNEZOMBIERUNTIME_API UBTTaskFleeGoeminneSenne : public UBTTaskNo
 public:
 	UBTTaskFleeGoeminneSenne();
 	
+	UPROPERTY(EditAnywhere, Category="Safe Distance")
+	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTaskShootZombieGoeminneSenne::ExecuteTask(UBehaviorTreeCo
 	//If Zombie is close enough, prefer Shotgun, otherwise prefer Pistol
 	EItemType PreferredWeapon = EItemType::Pistol;
 	float DistSqr = FVector::DistSquared(ZombieTarget->GetActorLocation(), Survivor->GetActorLocation());
-	if (DistSqr <= 300 * 300)
+	if (DistSqr <= ShotgunDistance * ShotgunDistance)
 	{
 		PreferredWeapon = EItemType::Shotgun;
 	}
@@ -66,6 +66,9 @@ EBTNodeResult::Type UBTTaskShootZombieGoeminneSenne::ExecuteTask(UBehaviorTreeCo
 	
 	ABaseItem* Item = InventorySlots[SlotIndex];
 	bool bUseResult = Inventory->UseItem(SlotIndex);
+	
+	GEngine->AddOnScreenDebugMessage(3, 2.f, FColor::Blue,
+		FString::Printf(TEXT("Fired %s"), *Item->GetName()));
 	
 	if (not bUseResult) return EBTNodeResult::Failed;
 	

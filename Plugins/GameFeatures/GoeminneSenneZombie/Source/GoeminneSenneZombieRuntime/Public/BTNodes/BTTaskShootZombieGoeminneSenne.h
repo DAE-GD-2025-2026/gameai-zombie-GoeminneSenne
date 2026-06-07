@@ -18,6 +18,8 @@ class GOEMINNESENNEZOMBIERUNTIME_API UBTTaskShootZombieGoeminneSenne : public UB
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* TaskMemory) override;
 	
+	UPROPERTY(EditAnywhere, Category="Shotgun Distance")
+	float ShotgunDistance;
 private:
 	void RemoveItem(UInventoryComponent* Inventory, int SlotIndex, UBlackboardComponent* Blackboard) const;
 	
